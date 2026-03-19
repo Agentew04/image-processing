@@ -13,6 +13,14 @@ class Program {
     
     [STAThread]
     static void Main(string[] args) {
+
+        WindowManager mngr = new();
+        List<Window> windows = mngr.GetWindows();
+        foreach (Window window in windows) {
+            Console.WriteLine($"hWnd: {window.Hwnd}; Title: {window.Title}");
+        }
+        
+        return;
         WinRT.ComWrappersSupport.InitializeComWrappers();
         
         Result result = D3D11.D3D11CreateDevice(
