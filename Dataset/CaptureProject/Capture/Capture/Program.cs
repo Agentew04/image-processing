@@ -13,9 +13,7 @@ class Program {
     
     [STAThread]
     static void Main(string[] args) {
-
-        WindowManager mngr = new();
-        List<Window> windows = mngr.GetWindows();
+        List<Window> windows = WindowManager.GetOpenWindows();
         foreach (Window window in windows) {
             Console.WriteLine($"hWnd: {window.Hwnd}; Title: {window.Title}");
         }

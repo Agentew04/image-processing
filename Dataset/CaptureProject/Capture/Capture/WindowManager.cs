@@ -3,21 +3,14 @@ using System.Text;
 
 namespace Capture;
 
-public class WindowManager {
-    public WindowManager() {
-        
-    }
-
-    public void Initialize() {
-        
-    }
-
-    private readonly List<Window> windows = [];
+public static class WindowManager {
     
-    public List<Window> GetWindows() {
+    private static readonly List<Window> Windows = [];
+    
+    public static List<Window> GetOpenWindows() {
         EnumWindows(EnumTheWindows, IntPtr.Zero);
-        List<Window> clone = new(windows);
-        windows.Clear();
+        List<Window> clone = new(Windows);
+        Windows.Clear();
         return clone;
     }
 
@@ -31,7 +24,7 @@ public class WindowManager {
     static extern bool IsWindowVisible(IntPtr hWnd);
 
     
-    private bool EnumTheWindows(IntPtr hWnd, IntPtr lParam)
+    private static bool EnumTheWindows(IntPtr hWnd, IntPtr lParam)
     {
         StringBuilder sb = new(256);
         // Obtém o texto da janela
@@ -40,9 +33,9 @@ public class WindowManager {
         if (!isVisible || titleSize <= 0) {
             return true;
         }
-        windows.Add(new Window(hWnd, sb.ToString()));
+        Windows.Add(new Window(hWnd, sb.ToString()));
         return true; 
     }
 }
 
-public record class Window(IntPtr Hwnd, string Title);
+public record Window(IntPtr Hwnd, string Title);
