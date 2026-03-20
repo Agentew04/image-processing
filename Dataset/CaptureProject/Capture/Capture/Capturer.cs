@@ -1,6 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Numerics;
+using System.Runtime.InteropServices;
 using HPPH;
 using ScreenCapture.NET;
+using SharpGen.Runtime;
 using SkiaSharp;
 
 namespace Capture;
@@ -11,7 +13,6 @@ public class Capturer : IDisposable {
     private Dictionary<IntPtr, Display> handleToDisplay = [];
     private DX11ScreenCapture screenCapture;
     private CaptureZone<ColorBGRA> captureZone;
-    private Task capturingTask;
     private CancellationTokenSource cts;
     private PeriodicTimer timer;
 
@@ -35,18 +36,25 @@ public class Capturer : IDisposable {
             display = handleToDisplay[monitorHandle];
         }
         
+        // get monitor area
+        MONITORINFOEX monitorInfo = new();
+        monitorInfo.cbSize = Marshal.SizeOf(monitorInfo);
+        GetMonitorInfo(monitorHandle, ref monitorInfo);
+        GetWindowRect(window.Hwnd, out RECT windowRect);
+        
         // se ainda eh null, deu algo mt errado
         if (display.DeviceName == null) {
             throw new Exception("Could not find display for the monitor that the selected window is at");
         }
         
         screenCapture = screenCaptureService.GetScreenCapture(display);
-        captureZone = screenCapture.RegisterCaptureZone(0, 0, display.Width, display.Height);
+        captureZone = screenCapture.RegisterCaptureZone(windowRect.left - monitorInfo.rcMonitor.left, windowRect.top - monitorInfo.rcMonitor.top, 
+            windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
         
         // spin up separate thread for capturing frames
         cts = new CancellationTokenSource();
         timer = new PeriodicTimer(TimeSpan.FromSeconds(1 / targetFps));
-        capturingTask = Task.Run(ThreadMain);
+        _ = Task.Run(ThreadMain);
     }
 
     public void StopCapture() {
@@ -127,4 +135,7 @@ public class Capturer : IDisposable {
     
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     public static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFOEX lpmi);
+    
+    [DllImport("user32.dll")]
+    public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 }
