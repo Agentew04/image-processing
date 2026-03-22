@@ -12,8 +12,10 @@ class Program {
     
     [STAThread]
     static async Task Main(string[] args) {
-        Capturer capturer = new();
+        using Capturer capturer = new();
+        using InputManager inputManager = new();
         capturer.Initialize();
+        inputManager.Initialize();
 
         List<Window> windows = WindowManager.GetOpenWindows();
         Console.WriteLine("Selecione a janela para capturar");
@@ -23,8 +25,29 @@ class Program {
         Console.Write("> ");
         string input = Console.ReadLine() ?? string.Empty;
         int windowIndex = int.Parse(input)-1;
-        capturer.StartCapture(windows[windowIndex], 5);
-        await Task.Delay(1000);
+        
+        inputManager.StartMessageLoop();
+
+        bool capturing = false;
+        inputManager.OnCaptureToggle += () => {
+            capturing = !capturing;
+            if (capturing) {
+                Console.WriteLine("Unpaused capture");
+                capturer.UnpauseCapture();
+            }
+            else {
+                Console.WriteLine("Paused capture");
+                capturer.PauseCapture();
+            }
+        };
+        Console.WriteLine("System Ready");
+        
+        capturer.StartCapture(windows[windowIndex], 5, true);
+
+        Console.WriteLine("Press ENTER to stop");
+        Console.ReadLine();
+        
+        inputManager.StopMessageLoop();
         capturer.StopCapture();
         Console.WriteLine("Exit");
     }
