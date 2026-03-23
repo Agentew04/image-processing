@@ -53,6 +53,9 @@ public class Capturer : IDisposable {
         
         screenCapture = screenCaptureService.GetScreenCapture(display);
         int margin = 8;
+        if (windowRect.bottom - windowRect.top == 1080) {
+            margin = 0;
+        }
         Vector2 pos = new(windowRect.left + margin - monitorInfo.rcMonitor.left,
             windowRect.top + margin - monitorInfo.rcMonitor.top);
         Vector2 size = new(windowRect.right - windowRect.left - 2*margin, windowRect.bottom - windowRect.top - 2*margin);
@@ -76,8 +79,20 @@ public class Capturer : IDisposable {
     }
 
     public void StopCapture() {
-        cts.Cancel();
-        captureTask.GetAwaiter().GetResult();
+        try {
+            cts.Cancel();
+        }
+        catch (OperationCanceledException) {
+            // empty
+        }
+
+        try {
+            captureTask.GetAwaiter().GetResult();
+        }
+        catch (Exception e) {
+            Console.WriteLine("Error waiting capture task to end: " + e.Message);
+        }
+
         timer.Dispose();
     }
 
@@ -97,11 +112,7 @@ public class Capturer : IDisposable {
                         bitmap.InstallPixels(info, (IntPtr)ptr);
                     }
                 }
-                using SKData data = bitmap.Encode(SKEncodedImageFormat.Jpeg, 100);
-                string path = $"./img-{Random.Shared.Next()}.jpg";
-                await using FileStream fs = File.Create(path);
-                data.SaveTo(fs);
-                Console.WriteLine($"Captured screen to {path}");
+                OnCapture?.Invoke(bitmap);
             }
         }
     }
@@ -117,6 +128,8 @@ public class Capturer : IDisposable {
         screenCaptureService.Dispose();
         screenCapture.Dispose();
     }
+
+    public event Action<SKBitmap> OnCapture; 
 
     private bool MonitorCallback(IntPtr hMonitor, IntPtr hdcMonitor, ref RECT rect, IntPtr data) {
         MONITORINFOEX info = new();

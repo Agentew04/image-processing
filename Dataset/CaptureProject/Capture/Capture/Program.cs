@@ -14,8 +14,10 @@ class Program {
     static async Task Main(string[] args) {
         using Capturer capturer = new();
         using InputManager inputManager = new();
+        using Detector detector = new();
         capturer.Initialize();
         inputManager.Initialize();
+        detector.Initialize();
 
         List<Window> windows = WindowManager.GetOpenWindows();
         Console.WriteLine("Selecione a janela para capturar");
@@ -40,6 +42,17 @@ class Program {
                 capturer.PauseCapture();
             }
         };
+        capturer.OnCapture += bmp => {
+            using SKData data = bmp.Encode(SKEncodedImageFormat.Jpeg, 100);
+            string name = DateTime.Now.Ticks.ToString();
+            string path = $"./captures/{name}-frame.jpg";
+            using FileStream fs = File.Create(path);
+            data.SaveTo(fs);
+            Console.WriteLine($"Captured screen to {path}");
+            using SKImage? copy = SKImage.FromBitmap(bmp.Copy());
+            detector.Detect(copy, name);
+        };
+        
         Console.WriteLine("System Ready");
         
         capturer.StartCapture(windows[windowIndex], 5, true);

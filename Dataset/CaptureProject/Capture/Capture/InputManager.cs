@@ -9,8 +9,8 @@ using Linearstar.Windows.RawInput.Native;
 namespace Capture;
 
 public class InputManager : IDisposable {
-    private CancellationTokenSource cts;
-    private Task messageLoopTask;
+    private CancellationTokenSource? cts;
+    private Task? messageLoopTask;
     private IntPtr hiddenWindowHandle;
 
     public void Initialize() {
@@ -24,8 +24,8 @@ public class InputManager : IDisposable {
     }
 
     public void StopMessageLoop() {
-        cts.Cancel();
-        messageLoopTask.GetAwaiter().GetResult();
+        cts?.Cancel();
+        messageLoopTask?.GetAwaiter().GetResult();
     }
 
     private void ThreadMain() {
@@ -68,7 +68,7 @@ public class InputManager : IDisposable {
     }
 
     public void Dispose() {
-        if (!cts.IsCancellationRequested) {
+        if (!(cts?.IsCancellationRequested ?? false)) {
             StopMessageLoop();
         }
 
