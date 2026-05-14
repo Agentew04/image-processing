@@ -5,6 +5,7 @@ using Windows.Foundation.Metadata;
 using HPPH;
 using ScreenCapture.NET;
 using SkiaSharp;
+using YoloDotNet.Models;
 
 namespace Capture;
 
@@ -15,18 +16,27 @@ class Program {
         using Capturer capturer = new();
         using InputManager inputManager = new();
         using Detector detector = new();
+        using MinimapExtractor minimapExtractor = new();
         capturer.Initialize();
         inputManager.Initialize();
         detector.Initialize();
 
         List<Window> windows = WindowManager.GetOpenWindows();
-        Console.WriteLine("Selecione a janela para capturar");
-        for (int i = 0; i < windows.Count; i++) {
-            Console.WriteLine($"{i+1}. {windows[i].Title}");
+        Window? cs = windows.FirstOrDefault(x => x.Title == "Counter-Strike 2");
+        if (cs is null) {
+            // could not find automagically, prompt user
+            Console.WriteLine("Selecione a janela para capturar");
+            for (int i = 0; i < windows.Count; i++) {
+                Console.WriteLine($"{i+1}. {windows[i].Title}");
+            }
+            Console.Write("> ");
+            string input = Console.ReadLine() ?? string.Empty;
+            int windowIndex = int.Parse(input)-1;
+            cs = windows[windowIndex];
         }
-        Console.Write("> ");
-        string input = Console.ReadLine() ?? string.Empty;
-        int windowIndex = int.Parse(input)-1;
+        else {
+            Console.WriteLine("Found CS2 window");
+        }
         
         inputManager.StartMessageLoop();
 
@@ -43,19 +53,21 @@ class Program {
             }
         };
         capturer.OnCapture += bmp => {
-            using SKData data = bmp.Encode(SKEncodedImageFormat.Jpeg, 100);
-            string name = DateTime.Now.Ticks.ToString();
-            string path = $"./captures/{name}-frame.jpg";
-            using FileStream fs = File.Create(path);
-            data.SaveTo(fs);
-            Console.WriteLine($"Captured screen to {path}");
-            using SKImage? copy = SKImage.FromBitmap(bmp.Copy());
-            detector.Detect(copy, name);
+            Task<List<ObjectDetection>> detectTask = Task.Run(() => detector.Detect(SKImage.FromBitmap(bmp)));
+            Task<float[]> taskRaycast = Task.Run(() => minimapExtractor.ExtractMinimap(SKImage.FromBitmap(bmp)));
+
+            Task.WhenAll(detectTask, taskRaycast).GetAwaiter().GetResult();
+            // string name = DateTime.Now.Ticks.ToString();
+            // string path = $"./captures/{name}-frame.jpg";
+            // Console.WriteLine($"Captured screen to {path}");
+
+            // using SKImage? copy = SKImage.FromBitmap(bmp.Copy());
+            // detector.Detect(copy, name);
         };
         
         Console.WriteLine("System Ready");
         
-        capturer.StartCapture(windows[windowIndex], 5, true);
+        capturer.StartCapture(cs, 15, true);
 
         Console.WriteLine("Press ENTER to stop");
         Console.ReadLine();

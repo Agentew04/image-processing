@@ -1,7 +1,12 @@
 ﻿using System.Diagnostics;
 using SkiaSharp;
 using YoloDotNet;
-using YoloDotNet.ExecutionProvider.Cpu;
+using YoloDotNet.Enums;
+// using YoloDotNet.Exceptions;
+// using YoloDotNet.ExecutionProvider.Cpu;
+// using YoloDotNet.ExecutionProvider.Cuda;
+// using YoloDotNet.ExecutionProvider.DirectML;
+// using YoloDotNet.ExecutionProvider.OpenVino;
 using YoloDotNet.Extensions;
 using YoloDotNet.Models;
 
@@ -10,40 +15,73 @@ namespace Capture;
 public class Detector : IDisposable{
 
     private Yolo yolo;
-    private Stopwatch sw = new();
+
+    private enum ExecutionProvider {
+        Cuda,
+        DirectMl,
+        OpenVino,
+        Cpu
+    }
     
-    public Detector() {
+    public void Initialize() {
+        // try direct ml
+        // if (TryYolo(ExecutionProvider.Cuda)) {
+        //     Console.WriteLine("Using CUDA as Yolo Execution Provider");
+        //     return;
+        // }
+
+        if (OperatingSystem.IsWindows() && TryYolo(ExecutionProvider.DirectMl)) {
+            Console.WriteLine("Using DirectML as Yolo Execution Provider");
+            return;
+        }
         
+        if (TryYolo(ExecutionProvider.OpenVino)) {
+            Console.WriteLine("Using OpenVino as Yolo Execution Provider");
+            return;
+        }
+
+        if (TryYolo(ExecutionProvider.Cpu)) {
+            Console.WriteLine("Using CPU as Yolo Execution Provider");
+            return;
+        }
+        
+        Console.WriteLine("Could not find any suitable execution provider for YOLO");
     }
 
-    public void Initialize() {
+    private bool TryYolo(ExecutionProvider provider) {
+        const string model = "yolov8s_cs2.onnx";
         try {
             yolo = new Yolo(new YoloOptions {
-                ExecutionProvider = new CpuExecutionProvider("yolov8s_cs2.onnx")
+                OnnxModel = model ,
+                ModelType = ModelType.ObjectDetection,
+                Cuda = true,
+                GpuId = 1,
+                PrimeGpu = false
+                // ExecutionProvider = provider switch {
+                //     // ExecutionProvider.Cuda => new CudaExecutionProvider(model),
+                //     ExecutionProvider.DirectMl => new DirectMLExecutionProvider(model),
+                //     // ExecutionProvider.OpenVino => new OpenVinoExecutionProvider(model),
+                //     // ExecutionProvider.Cpu => new CpuExecutionProvider(model)
+                //     _ => null
+                // }
             });
+            return true;
         }
         catch (Exception e) {
-            Console.WriteLine("Error initializing yolo: " + e.Message);
-            throw;
+            Console.WriteLine($"Error trying {provider} execution provider for yolo ({e.GetType().Name}): {e.Message}");
+            return false;
         }
     }
     
-    public void Detect(SKImage image, string name) {
-        sw.Restart();
+    public List<ObjectDetection> Detect(SKImage image) {
+        ChromeTraceScope scope = new("Detect", "Yolo Detection");
         List<ObjectDetection> results = yolo.RunObjectDetection(image, confidence: 0.25, iou: 0.7)
             .ToList(); 
-        sw.Stop();
-        Console.WriteLine($"Detected: ({sw.ElapsedMilliseconds}ms)");
-        foreach (ObjectDetection result in results) {
-            Console.Write("  - ");
-            Console.WriteLine($"({result.Label.Index}, {result.Label.Name}) - {result.BoundingBox}");
-        }
-
-        using SKBitmap drawn = image.Draw(results);
-        drawn.Save($"./captures/{name}-yolo.jpg");
+        scope.Dispose();
+        return results;
     }
 
     public void Dispose() {
-        yolo.Dispose();
+        yolo?.Dispose();
     }
 }

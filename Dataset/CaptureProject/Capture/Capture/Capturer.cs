@@ -99,22 +99,37 @@ public class Capturer : IDisposable {
     private async Task ThreadMain() {
         using SKBitmap bitmap = new();
         SKImageInfo info = new(captureZone.Width, captureZone.Height, SKColorType.Bgra8888);
-        while (!cts.IsCancellationRequested && await timer.WaitForNextTickAsync(cts.Token)) {
-            if (isCapturePaused) {
-                await Task.Delay(1);
-                continue;
-            }
-            screenCapture.CaptureScreen();
-            using (captureZone.Lock()) {
-                ref byte buffer = ref MemoryMarshal.GetReference(captureZone.RawBuffer);
-                unsafe {
-                    fixed (byte* ptr = &buffer) {
-                        bitmap.InstallPixels(info, (IntPtr)ptr);
-                    }
+        ChromeTraceScope.StartSession();
+        try {
+            while (!cts.IsCancellationRequested && await timer.WaitForNextTickAsync(cts.Token)) {
+                if (isCapturePaused) {
+                    await Task.Delay(10);
+                    continue;
                 }
-                OnCapture?.Invoke(bitmap);
+
+                using (new ChromeTraceScope("Game", "Frame")) {
+                    using (new ChromeTraceScope("Capture", "Capture Screen")) {
+                        screenCapture.CaptureScreen();
+                        using (captureZone.Lock()) {
+                            ref byte buffer = ref MemoryMarshal.GetReference(captureZone.RawBuffer);
+                            unsafe {
+                                fixed (byte* ptr = &buffer) {
+                                    bitmap.InstallPixels(info, (IntPtr)ptr);
+                                }
+                            }
+
+                        }
+
+                    }
+                    OnCapture?.Invoke(bitmap);
+                }
             }
         }
+        catch (Exception e) {
+            Console.WriteLine("Error on Capturer ThreadMain: " + e.Message);
+        }
+        ChromeTraceSession session = ChromeTraceScope.EndSession();
+        File.WriteAllText("trace.json", session.ToJson(true));
     }
 
     public void Dispose() {
@@ -129,7 +144,7 @@ public class Capturer : IDisposable {
         screenCapture.Dispose();
     }
 
-    public event Action<SKBitmap> OnCapture; 
+    public event Action<SKBitmap>? OnCapture; 
 
     private bool MonitorCallback(IntPtr hMonitor, IntPtr hdcMonitor, ref RECT rect, IntPtr data) {
         MONITORINFOEX info = new();
