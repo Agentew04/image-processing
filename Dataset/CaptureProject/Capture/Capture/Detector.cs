@@ -1,13 +1,11 @@
-﻿using System.Diagnostics;
-using SkiaSharp;
+﻿using SkiaSharp;
 using YoloDotNet;
-using YoloDotNet.Enums;
 // using YoloDotNet.Exceptions;
 // using YoloDotNet.ExecutionProvider.Cpu;
 // using YoloDotNet.ExecutionProvider.Cuda;
-// using YoloDotNet.ExecutionProvider.DirectML;
-// using YoloDotNet.ExecutionProvider.OpenVino;
+using YoloDotNet.ExecutionProvider.DirectML;
 using YoloDotNet.Extensions;
+// using YoloDotNet.ExecutionProvider.OpenVino;
 using YoloDotNet.Models;
 
 namespace Capture;
@@ -24,7 +22,6 @@ public class Detector : IDisposable{
     }
     
     public void Initialize() {
-        // try direct ml
         // if (TryYolo(ExecutionProvider.Cuda)) {
         //     Console.WriteLine("Using CUDA as Yolo Execution Provider");
         //     return;
@@ -52,18 +49,14 @@ public class Detector : IDisposable{
         const string model = "yolov8s_cs2.onnx";
         try {
             yolo = new Yolo(new YoloOptions {
-                OnnxModel = model ,
-                ModelType = ModelType.ObjectDetection,
-                Cuda = true,
-                GpuId = 1,
-                PrimeGpu = false
-                // ExecutionProvider = provider switch {
+                
+                ExecutionProvider = provider switch {
                 //     // ExecutionProvider.Cuda => new CudaExecutionProvider(model),
-                //     ExecutionProvider.DirectMl => new DirectMLExecutionProvider(model),
+                ExecutionProvider.DirectMl => new DirectMLExecutionProvider(model),
                 //     // ExecutionProvider.OpenVino => new OpenVinoExecutionProvider(model),
                 //     // ExecutionProvider.Cpu => new CpuExecutionProvider(model)
-                //     _ => null
-                // }
+                _ => null!
+                }
             });
             return true;
         }
@@ -75,9 +68,12 @@ public class Detector : IDisposable{
     
     public List<ObjectDetection> Detect(SKImage image) {
         ChromeTraceScope scope = new("Detect", "Yolo Detection");
-        List<ObjectDetection> results = yolo.RunObjectDetection(image, confidence: 0.25, iou: 0.7)
-            .ToList(); 
+        List<ObjectDetection> results = yolo.RunObjectDetection(image, confidence: 0.25, iou: 0.7);
         scope.Dispose();
+        long ticks = DateTime.UtcNow.Ticks;
+        // image.Save($"captures/{ticks}-cs.jpg");
+        SKBitmap drawn = image.Draw(results);
+        // drawn.Save($"captures/{ticks}-yolo.jpg");
         return results;
     }
 

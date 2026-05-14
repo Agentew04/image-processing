@@ -28,11 +28,11 @@ public static class MinimapMasking {
 
                 for (int x = 0; x < w; x++) {
                     // SKColor = 4 bytes (BGRA)
-                    // byte b = inRow[x * 4 + 0];
-                    // byte g = inRow[x * 4 + 1];
+                    byte b = inRow[x * 4 + 0];
+                    byte g = inRow[x * 4 + 1];
                     byte r = inRow[x * 4 + 2];
-
-                    outRow[x] = (r <= 5) ? (byte)255 : (byte)0;
+                    bool gray = r <= 65 && g <= 65 && b <= 65;
+                    outRow[x] = gray ? (byte)255 : (byte)0;
                 }
             }
         }

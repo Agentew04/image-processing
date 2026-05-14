@@ -1,25 +1,27 @@
-﻿using System.Runtime.InteropServices;
-using Windows.Graphics.DirectX.Direct3D11;
-using ABI.Windows.Graphics.Capture;
-using Windows.Foundation.Metadata;
-using HPPH;
-using ScreenCapture.NET;
+﻿using System.Numerics;
 using SkiaSharp;
 using YoloDotNet.Models;
 
 namespace Capture;
 
-class Program {
+public static class Program {
+
+    private static Dictionary<char, bool> keyStates = [];
+    private static readonly char[] watchedKeys = [
+        'W', 'A', 'S', 'D'
+    ];
     
     [STAThread]
-    static async Task Main(string[] args) {
+    public static async Task Main(string[] args) {
         using Capturer capturer = new();
         using InputManager inputManager = new();
         using Detector detector = new();
         using MinimapExtractor minimapExtractor = new();
+        using DebugUiReader debugReader = new();
         capturer.Initialize();
         inputManager.Initialize();
         detector.Initialize();
+        debugReader.Initialize();
 
         List<Window> windows = WindowManager.GetOpenWindows();
         Window? cs = windows.FirstOrDefault(x => x.Title == "Counter-Strike 2");
@@ -41,6 +43,7 @@ class Program {
         inputManager.StartMessageLoop();
 
         bool capturing = false;
+        bool positionShowing = false;
         inputManager.OnCaptureToggle += () => {
             capturing = !capturing;
             if (capturing) {
@@ -52,22 +55,68 @@ class Program {
                 capturer.PauseCapture();
             }
         };
+        inputManager.OnTogglePosition += () => {
+            positionShowing = !positionShowing;
+            if (positionShowing) {
+                Console.WriteLine("Show position");
+                inputManager.TypeString("p");
+                // inputManager.Tap(0x29);
+                Thread.Sleep(150);
+                inputManager.TypeString("sv_cheats true", true);
+                Thread.Sleep(50);
+                inputManager.TypeString("cl_showpos 1", true);
+                Thread.Sleep(50);
+                inputManager.Tap(0x1);
+            }
+            else {
+                Console.WriteLine("Hide Position");
+                // inputManager.Tap(0x29);
+                inputManager.TypeString("p");
+                Thread.Sleep(150);
+                inputManager.TypeString("cl_showpos 0", true);
+                Thread.Sleep(50);
+                inputManager.TypeString("sv_cheats false", true);
+                Thread.Sleep(50);
+                inputManager.Tap(0x1);
+            }
+        };
+        
+        inputManager.OnKeyboard += (key, pressed) => {
+            if (!watchedKeys.Contains(key)) {
+                // Console.WriteLine("ignored key: " + key);
+                return;
+            }
+            keyStates[key] = pressed;
+        };
         capturer.OnCapture += bmp => {
-            Task<List<ObjectDetection>> detectTask = Task.Run(() => detector.Detect(SKImage.FromBitmap(bmp)));
-            Task<float[]> taskRaycast = Task.Run(() => minimapExtractor.ExtractMinimap(SKImage.FromBitmap(bmp)));
+            SKColor helmetPixel = bmp.GetPixel(635, 1016);
+            int tolerance = 16;
+            if (Math.Abs(helmetPixel.Red - 0xec) > tolerance 
+                || Math.Abs(helmetPixel.Green - 0xc0) > tolerance 
+                || Math.Abs(helmetPixel.Blue - 0x59) > tolerance) {
+                // player is dead. helmet no longer in the hud
+                Console.WriteLine("Player dead");
+                return;
+            }
 
-            Task.WhenAll(detectTask, taskRaycast).GetAwaiter().GetResult();
-            // string name = DateTime.Now.Ticks.ToString();
-            // string path = $"./captures/{name}-frame.jpg";
-            // Console.WriteLine($"Captured screen to {path}");
-
-            // using SKImage? copy = SKImage.FromBitmap(bmp.Copy());
-            // detector.Detect(copy, name);
+            (Vector3 position, Vector2 orientation) = debugReader.Read(SKImage.FromBitmap(bmp));
+            List<ObjectDetection> objs = detector.Detect(SKImage.FromBitmap(bmp));
+            float[] rays = minimapExtractor.ExtractMinimap(SKImage.FromBitmap(bmp));
+            
+            // correlate all async key & mouse events received in the frame time
+            // keyStates.TryGetValue('W', out bool w);
+            // keyStates.TryGetValue('A', out bool a);
+            // keyStates.TryGetValue('S', out bool s);
+            // keyStates.TryGetValue('D', out bool d);
+            
+            // dispatch assembled frame
+                
+            // reset input matching data
         };
         
         Console.WriteLine("System Ready");
         
-        capturer.StartCapture(cs, 15, true);
+        capturer.StartCapture(cs, 1, true);
 
         Console.WriteLine("Press ENTER to stop");
         Console.ReadLine();
