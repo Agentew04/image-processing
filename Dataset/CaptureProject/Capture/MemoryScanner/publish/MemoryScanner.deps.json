@@ -1,0 +1,366 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0/win-x64",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {},
+    ".NETCoreApp,Version=v10.0/win-x64": {
+      "MemoryScanner/1.0.0": {
+        "dependencies": {
+          "Capture": "1.0.0",
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.57"
+        },
+        "runtime": {
+          "MemoryScanner.dll": {}
+        }
+      },
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.57": {
+        "runtime": {
+          "Microsoft.Windows.SDK.NET.dll": {
+            "assemblyVersion": "10.0.19041.38",
+            "fileVersion": "10.0.19041.55"
+          },
+          "WinRT.Runtime.dll": {
+            "assemblyVersion": "2.2.0.0",
+            "fileVersion": "2.2.0.48161"
+          }
+        }
+      },
+      "HPPH/1.0.0": {
+        "runtime": {
+          "lib/net8.0/HPPH.dll": {
+            "assemblyVersion": "0.0.1.0",
+            "fileVersion": "0.0.1.0"
+          }
+        }
+      },
+      "Microsoft.ML.OnnxRuntime.DirectML/1.23.0": {
+        "dependencies": {
+          "Microsoft.ML.OnnxRuntime.Managed": "1.23.0"
+        },
+        "native": {
+          "runtimes/win-x64/native/onnxruntime.dll": {
+            "fileVersion": "1.23.25.926"
+          },
+          "runtimes/win-x64/native/onnxruntime.lib": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/onnxruntime_providers_shared.dll": {
+            "fileVersion": "1.23.25.926"
+          }
+        }
+      },
+      "Microsoft.ML.OnnxRuntime.Managed/1.23.0": {
+        "dependencies": {
+          "System.Numerics.Tensors": "9.0.0"
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.ML.OnnxRuntime.dll": {
+            "assemblyVersion": "1.23.0.0",
+            "fileVersion": "1.23.0.0"
+          }
+        }
+      },
+      "RawInput.Sharp/0.1.3": {
+        "runtime": {
+          "lib/net7.0/RawInput.Sharp.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "ScreenCapture.NET/3.0.0": {
+        "dependencies": {
+          "HPPH": "1.0.0"
+        },
+        "runtime": {
+          "lib/net8.0/ScreenCapture.NET.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.0.0"
+          }
+        }
+      },
+      "ScreenCapture.NET.DX11/3.0.0": {
+        "dependencies": {
+          "ScreenCapture.NET": "3.0.0",
+          "Vortice.Direct3D11": "3.5.0"
+        },
+        "runtime": {
+          "lib/net8.0/ScreenCapture.NET.DX11.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.0.0"
+          }
+        }
+      },
+      "SharpGen.Runtime/2.1.2-beta": {
+        "runtime": {
+          "lib/net8.0/SharpGen.Runtime.dll": {
+            "assemblyVersion": "2.1.2.0",
+            "fileVersion": "2.1.2.0"
+          }
+        }
+      },
+      "SharpGen.Runtime.COM/2.1.2-beta": {
+        "dependencies": {
+          "SharpGen.Runtime": "2.1.2-beta"
+        },
+        "runtime": {
+          "lib/net8.0/SharpGen.Runtime.COM.dll": {
+            "assemblyVersion": "2.1.2.0",
+            "fileVersion": "2.1.2.0"
+          }
+        }
+      },
+      "SkiaSharp/3.119.2": {
+        "dependencies": {
+          "SkiaSharp.NativeAssets.Win32": "3.119.2"
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.19041/SkiaSharp.dll": {
+            "assemblyVersion": "3.119.0.0",
+            "fileVersion": "3.119.2.0"
+          }
+        }
+      },
+      "SkiaSharp.NativeAssets.Win32/3.119.2": {
+        "native": {
+          "runtimes/win-x64/native/libSkiaSharp.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/libSkiaSharp.pdb": {
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "System.Numerics.Tensors/9.0.0": {
+        "runtime": {
+          "lib/net9.0/System.Numerics.Tensors.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.24.52809"
+          }
+        }
+      },
+      "Vortice.Direct3D11/3.5.0": {
+        "dependencies": {
+          "SharpGen.Runtime": "2.1.2-beta",
+          "Vortice.DXGI": "3.5.0"
+        },
+        "runtime": {
+          "lib/net8.0/Vortice.Direct3D11.dll": {
+            "assemblyVersion": "3.5.0.0",
+            "fileVersion": "3.5.0.0"
+          }
+        }
+      },
+      "Vortice.DirectX/3.5.0": {
+        "dependencies": {
+          "SharpGen.Runtime": "2.1.2-beta",
+          "SharpGen.Runtime.COM": "2.1.2-beta",
+          "Vortice.Mathematics": "1.7.8"
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.19041/Vortice.DirectX.dll": {
+            "assemblyVersion": "3.5.0.0",
+            "fileVersion": "3.5.0.0"
+          }
+        }
+      },
+      "Vortice.DXGI/3.5.0": {
+        "dependencies": {
+          "SharpGen.Runtime": "2.1.2-beta",
+          "Vortice.DirectX": "3.5.0"
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.19041/Vortice.DXGI.dll": {
+            "assemblyVersion": "3.5.0.0",
+            "fileVersion": "3.5.0.0"
+          }
+        }
+      },
+      "Vortice.Mathematics/1.7.8": {
+        "runtime": {
+          "lib/net8.0/Vortice.Mathematics.dll": {
+            "assemblyVersion": "1.7.8.0",
+            "fileVersion": "1.7.8.0"
+          }
+        }
+      },
+      "YoloDotNet/4.2.0": {
+        "dependencies": {
+          "SkiaSharp": "3.119.2"
+        },
+        "runtime": {
+          "lib/net8.0/YoloDotNet.dll": {
+            "assemblyVersion": "4.2.0.0",
+            "fileVersion": "4.2.0.0"
+          }
+        }
+      },
+      "YoloDotNet.ExecutionProvider.DirectML/1.0.0": {
+        "dependencies": {
+          "Microsoft.ML.OnnxRuntime.DirectML": "1.23.0",
+          "YoloDotNet": "4.2.0"
+        },
+        "runtime": {
+          "lib/net8.0/YoloDotNet.ExecutionProvider.DirectML.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Capture/1.0.0": {
+        "dependencies": {
+          "RawInput.Sharp": "0.1.3",
+          "ScreenCapture.NET.DX11": "3.0.0",
+          "SkiaSharp": "3.119.2",
+          "YoloDotNet": "4.2.0",
+          "YoloDotNet.ExecutionProvider.DirectML": "1.0.0"
+        },
+        "runtime": {
+          "Capture.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "MemoryScanner/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.57": {
+      "type": "runtimepack",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HPPH/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XW4/RrnvolGGJm052bkutBPy1LlolW4rhMkmf2eXWaMGxCuTUfhAsewmgQPF7g50JSS7gu/n73rAUzcVW1vbfA==",
+      "path": "hpph/1.0.0",
+      "hashPath": "hpph.1.0.0.nupkg.sha512"
+    },
+    "Microsoft.ML.OnnxRuntime.DirectML/1.23.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zABy69z74iSy05blZpfFsm+3IETjJniH1hDwzAkSyrjKW96yHnEQ1zd1P+LNmuQWqnLkx5LOKQQ487ndsxTX6g==",
+      "path": "microsoft.ml.onnxruntime.directml/1.23.0",
+      "hashPath": "microsoft.ml.onnxruntime.directml.1.23.0.nupkg.sha512"
+    },
+    "Microsoft.ML.OnnxRuntime.Managed/1.23.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YsvYcS/Xp9QW/cN+FqC7iX66eIaV1hDeNLgCjNzY/4HU3J9+ABk5QVqpP1YgcSmOouVq0+/IBR0FYKvLYQi+4g==",
+      "path": "microsoft.ml.onnxruntime.managed/1.23.0",
+      "hashPath": "microsoft.ml.onnxruntime.managed.1.23.0.nupkg.sha512"
+    },
+    "RawInput.Sharp/0.1.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-NSDy0QP+XAucd5n7x8NeS2f0MVjEBAqlQ/0XpJ8IjgfRyOoKUKmNHvkN02XkhxV8tqAOPDBB8C36AjFm1Gq92w==",
+      "path": "rawinput.sharp/0.1.3",
+      "hashPath": "rawinput.sharp.0.1.3.nupkg.sha512"
+    },
+    "ScreenCapture.NET/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/nAlvKYg+Ucy3FH+9QlcVnMCbaFtlX4GSQA9Y2ltLNk6A0jEWMDcNnEkuigIIL3QWDNjb6sXmvzChGMTOs7byw==",
+      "path": "screencapture.net/3.0.0",
+      "hashPath": "screencapture.net.3.0.0.nupkg.sha512"
+    },
+    "ScreenCapture.NET.DX11/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-j6YKn8Cd5PgHLMTSGPpmMoUiHRmggpQovaCwH7p/J7fMuAuG0RuvaLwEb0TfGfRv1LKxTzV8moTHzoehdDIdmw==",
+      "path": "screencapture.net.dx11/3.0.0",
+      "hashPath": "screencapture.net.dx11.3.0.0.nupkg.sha512"
+    },
+    "SharpGen.Runtime/2.1.2-beta": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nqZAjfEG1jX1ivvdZLsi6Pkt0DiOJyuOgRgldNFsmjXFPhxUbXQibofLSwuDZidL2kkmtTF8qLoRIeqeVdXgYw==",
+      "path": "sharpgen.runtime/2.1.2-beta",
+      "hashPath": "sharpgen.runtime.2.1.2-beta.nupkg.sha512"
+    },
+    "SharpGen.Runtime.COM/2.1.2-beta": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HBCrb6HfnUWx9v5/GjJeBr5DuodZLnHlFQQYXPrQs1Hbe1c6Wd0uCXf+SJp4hW8fQNxjXEu0FgiyHGlA/SRzRw==",
+      "path": "sharpgen.runtime.com/2.1.2-beta",
+      "hashPath": "sharpgen.runtime.com.2.1.2-beta.nupkg.sha512"
+    },
+    "SkiaSharp/3.119.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nmy2dOFWPvQKMglfpjz8+/xQQcSrL9jzul3cUyzCJVSwrmSAw+6B1sEgU7jt6NZBptwGq2k/V0kjyu2GizMFtg==",
+      "path": "skiasharp/3.119.2",
+      "hashPath": "skiasharp.3.119.2.nupkg.sha512"
+    },
+    "SkiaSharp.NativeAssets.Win32/3.119.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-uYe+da6+GXVgPKkCopzvIZ83DmC8SXXKeUAPrNcztJNsg0SjPQAxfKMOPZqmVjbzznrq/QUIjLUlJSZV/e0IPA==",
+      "path": "skiasharp.nativeassets.win32/3.119.2",
+      "hashPath": "skiasharp.nativeassets.win32.3.119.2.nupkg.sha512"
+    },
+    "System.Numerics.Tensors/9.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hyJB4UlpAi19Xr9AXzu2NuagKC4lPfHObNMEAA0HmqFz2rX7wKgzeYzO/jM/eBHDhnUGFFEjk5cOoJaxqg5J4A==",
+      "path": "system.numerics.tensors/9.0.0",
+      "hashPath": "system.numerics.tensors.9.0.0.nupkg.sha512"
+    },
+    "Vortice.Direct3D11/3.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TUVz5tml5tTlk1UpQgh/0cj74ehmlyzvQeGdVkdQGACth2v2t1d+/f84dqT/Trs/5O2WdIvXfYQe2yxALLR5mQ==",
+      "path": "vortice.direct3d11/3.5.0",
+      "hashPath": "vortice.direct3d11.3.5.0.nupkg.sha512"
+    },
+    "Vortice.DirectX/3.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LwyojEqRCaYgMoEqKsLnHWJ85wM237wFzZy/w57kvQPDsEd+zcqdwDYswOCEdizcLtDBzX/Xt4bbUPgFi8Kp4w==",
+      "path": "vortice.directx/3.5.0",
+      "hashPath": "vortice.directx.3.5.0.nupkg.sha512"
+    },
+    "Vortice.DXGI/3.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-W1dHY13DbitLJDVAAD8+YiGddqzBP1m3wN3pfEmxYrrE+dGEV/31aaw8EV74GXYnJQZ2vWJCnc7LCFPR2YkBnw==",
+      "path": "vortice.dxgi/3.5.0",
+      "hashPath": "vortice.dxgi.3.5.0.nupkg.sha512"
+    },
+    "Vortice.Mathematics/1.7.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hpVlfej54yC6Qaq9AYXWgTgF8SDz2dtKbDNZGO8msjn3NjdkUBnFcIzYfOWyvwvpr3aqZPKh4WSSnJ78GxyIWg==",
+      "path": "vortice.mathematics/1.7.8",
+      "hashPath": "vortice.mathematics.1.7.8.nupkg.sha512"
+    },
+    "YoloDotNet/4.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-184xejBbLKT2q1rxwHB5DZdeld+Cfht35hvBCkPiW7+7IvNIlOjo2Z4gqJ815iWug5jBPoisrdH4mkLZJcUTWw==",
+      "path": "yolodotnet/4.2.0",
+      "hashPath": "yolodotnet.4.2.0.nupkg.sha512"
+    },
+    "YoloDotNet.ExecutionProvider.DirectML/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DlPbahvegI+NxRpqx9OgPpyQcRsZUpzPwzQYR70zafLHAS55EmC5/7zKbZBVbRLMulDiEsXYrNUP4NX3SoxPUg==",
+      "path": "yolodotnet.executionprovider.directml/1.0.0",
+      "hashPath": "yolodotnet.executionprovider.directml.1.0.0.nupkg.sha512"
+    },
+    "Capture/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
